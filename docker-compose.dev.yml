@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:13-alpine
+    container_name: database
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "$DB_PASSWORD"
+      POSTGRES_USER: "$DB_USERNAME"
+      POSTGRES_DB: "$DB_NAME"
+    ports:
+      - "$DB_PORT:5432"
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+volumes:
+  database_data:
+    driver: local
+  
+networks:
+  backend:

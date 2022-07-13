@@ -13,7 +13,13 @@
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check **/*.js",
     "prettier:fix": "prettier --write **/*.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "knex:init": "knex init",
+    "migration:generate": "knex migrate:make $(date +%s)",
+    "migration:latest": "knex migrate:latest",
+    "migration:rollback": "knex migrate:rollback --all",
+    "migration:down": "knex migrate:down",
+    "migration:list": "knex migrate:list"
   },
   "repository": {
     "type": "git",
@@ -37,8 +43,11 @@
     "http-status": "^1.4.0",
     "joi": "^17.3.0",
     "jsonwebtoken": "^8.5.1",
+    "knex": "^2.1.0",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
+    "pg": "^8.7.3",
     "swagger-jsdoc": "^6.0.8",
     "swagger-ui-express": "^4.1.6",
     "validator": "^13.0.0",
