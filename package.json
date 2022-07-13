@@ -18,6 +18,7 @@
     "migration:generate": "knex migrate:make",
     "migration:latest": "knex migrate:latest",
     "migration:rollback": "knex migrate:rollback --all",
+    "migration:up": "knex migrate:up",
     "migration:down": "knex migrate:down",
     "migration:list": "knex migrate:list"
   },
