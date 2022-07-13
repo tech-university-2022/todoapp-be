@@ -15,7 +15,7 @@
     "prettier:fix": "prettier --write **/*.js",
     "prepare": "husky install",
     "knex:init": "knex init",
-    "migration:generate": "knex migrate:make $(date +%s)",
+    "migration:generate": "knex migrate:make",
     "migration:latest": "knex migrate:latest",
     "migration:rollback": "knex migrate:rollback --all",
     "migration:down": "knex migrate:down",
