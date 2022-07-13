@@ -1,9 +1,10 @@
-const http = require('http');
+const app = require('express')();
+const routers = require('./routers');
 
-const host = 'localhost';
-const port = 8000;
+const PORT = 3000;
 
-const server = http.createServer();
-server.listen(port, host, () => {
-  console.log(`Server is running on http://${host}:${port}`);
+app.use('/', routers);
+
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
 });

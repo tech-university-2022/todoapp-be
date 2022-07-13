@@ -20,7 +20,8 @@
     "migration:rollback": "knex migrate:rollback --all",
     "migration:up": "knex migrate:up",
     "migration:down": "knex migrate:down",
-    "migration:list": "knex migrate:list"
+    "migration:list": "knex migrate:list",
+    "start:routers": "node ./src/index.js"
   },
   "repository": {
     "type": "git",
@@ -53,7 +54,8 @@
     "swagger-ui-express": "^4.1.6",
     "validator": "^13.0.0",
     "winston": "^3.2.1",
-    "xss-clean": "^0.1.1"
+    "xss-clean": "^0.1.1",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "coveralls": "^3.0.7",

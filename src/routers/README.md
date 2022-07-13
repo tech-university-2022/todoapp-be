@@ -1,7 +1,7 @@
 /todos
 - GET /
-- POST /
 - GET /{id}
+- POST /
 - DELETE /{id}
 - PATCH /{id}
 
