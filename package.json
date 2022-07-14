@@ -19,7 +19,8 @@
     "migration:down": "sequelize-cli db:migrate:undo",
     "migration:rollback": "sequelize-cli db:migrate:undo:all",
     "migration:genseed": "sequelize-cli seed:generate",
-    "migration:seed": "sequelize-cli db:seed:all"
+    "migration:seed": "sequelize-cli db:seed:all",
+    "migration:undoseed": "sequelize-cli db:seed:undo:all"
   },
   "repository": {
     "type": "git",
