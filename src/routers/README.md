@@ -1,15 +1,49 @@
 /auth
 - POST /signup
+    - PAYLOAD: email, password, first name, last name, avatar
+    - RETURN: token
 - POST /login
-- GET /access-token
+    - PAYLOAD: email, password
+    - RETURN: token
+- POST /logout
+    - PAYLOAD: token
+    - RETURN: {}
 
 /user
-- GET /details
-- PUT /avatar
+- GET /
+    - PAYLOAD: token
+    - RETURN: {user information}
+- PATCH /
+    - PAYLOAD: token, first name, last name, avatar
+    - RETURN: {user information}
+- PATCH /
+    - PAYLOAD: token, oldPassword, newPassword
+    - RETURN: token
 
 /todos
 - GET /
-- GET /{id}
+    - PAYLOAD: token, pagination (take, page)
+    - RETURN: array of respective todos, pagination (take, page, haveNextPage, totalTodos).
+- GET /{todoId}
+    - PAYLOAD: token
+    - RETURN: respective todo
+- PATCH /{todoID}
+    - PAYLOAD: token, new content of todo
+    - RETURN: respective todo
 - POST /
-- DELETE /{id}
-- PATCH /{id}
+    - PAYLOAD: token, content of todo
+    - RETURN: respective todo
+- DELETE /{todoId}
+    - PAYLOAD: token
+    - RETURN: {}
+
+/files
+- GET /{fileId}
+    - PAYLOAD: token
+    - RETURN: respective file
+
+
+RestFul API
+
+RestLess
+    
