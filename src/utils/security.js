@@ -9,6 +9,11 @@ const hashPassword = (password) => {
     .digest('base64');
 };
 
+const hashPwdFingerprint = (hashedPassword) => {
+  return crypto.createHash('sha256').update('PWD_FINGERPRINT').update(hashedPassword).digest('base64');
+};
+
 module.exports = {
   hashPassword,
+  hashPwdFingerprint,
 };
