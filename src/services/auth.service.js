@@ -46,6 +46,15 @@ const logIn = async (credential) => {
  * @param {{email: string; password: string; firstName: string; lastName: string}} userInfo
  */
 const signUp = async (userInfo) => {
+  const userFound = await User.findOne({ where: { email: userInfo.email } });
+  if (userFound) {
+    return {
+      error: {
+        status: httpStatus.BAD_REQUEST,
+        message: 'User already exists',
+      },
+    };
+  }
   const createdUser = await User.create(userInfo);
   return { user: _.omit(createdUser.get({ plain: true }), 'password') };
 };

@@ -4,7 +4,12 @@ const { authService } = require('../services');
 
 const signUp = catchAsync(async (req, res) => {
   const userInfo = req.body;
-  const { user } = await authService.signUp(userInfo);
+  const { user, error } = await authService.signUp(userInfo);
+
+  if (error) {
+    return res.status(error.status).send(error);
+  }
+
   res.status(httpStatus.OK).send({ user });
 });
 
