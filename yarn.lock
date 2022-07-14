@@ -2259,11 +2259,6 @@ expect@^26.6.2:
     jest-message-util "^26.6.2"
     jest-regex-util "^26.0.0"
 
-express-rate-limit@^5.0.0:
-  version "5.5.1"
-  resolved "https://registry.npmjs.org/express-rate-limit/-/express-rate-limit-5.5.1.tgz"
-  integrity sha512-MTjE2eIbHv5DyfuFz4zLYWxpqVhEhkTiwFGuB74Q9CSou2WHO52nlE5y3Zlg6SIsiYUIPj6ifFxnkPz6O3sIUg==
-
 express@^4.17.1:
   version "4.18.1"
   resolved "https://registry.npmjs.org/express/-/express-4.18.1.tgz"
@@ -6125,14 +6120,14 @@ xmlchars@^2.2.0:
 
 xss-clean@^0.1.1:
   version "0.1.1"
-  resolved "https://registry.npmjs.org/xss-clean/-/xss-clean-0.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/xss-clean/-/xss-clean-0.1.1.tgz#d3ba684d85ccd52054963d01ad6ab36d662db1a5"
   integrity sha512-On99yydxoAEkHpraR7Wjg9cD6UmKfbtH2HXO1it2djid32osHL7Qr8bIu+dGYoOeKzf3ZszLfz1gwR/D7whZ2A==
   dependencies:
     xss-filters "1.2.6"
 
 xss-filters@1.2.6:
   version "1.2.6"
-  resolved "https://registry.npmjs.org/xss-filters/-/xss-filters-1.2.6.tgz"
+  resolved "https://registry.yarnpkg.com/xss-filters/-/xss-filters-1.2.6.tgz#68b39089cb1dff8b9dbc889484839b2f507f5c55"
   integrity sha512-uqgwZRpVJCDfHsRX9lDrkPyCitQYzPklmLSbajJncATZKAUd1tF1x9y2VyPNFMv8SsSWed80xorSS5qGpw3WiA==
 
 xtend@^4.0.0:

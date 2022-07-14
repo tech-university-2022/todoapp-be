@@ -1,15 +1,13 @@
 const routers = require('express').Router();
 
-const auth = require('./auth');
-const user = require('./user');
-const todos = require('./todos');
+const authRouter = require('./auth.router');
+const userRouter = require('./user.router');
+const todoRouter = require('./todo.router');
+const fileRouter = require('./file.router');
 
-routers.use('/auth', auth);
-routers.use('/user', user);
-routers.use('/todos', todos);
-
-routers.get('/', (req, res) => {
-  res.status(200).json({ message: 'Routers page!' });
-});
+routers.use('/auth', authRouter);
+routers.use('/user', userRouter);
+routers.use('/todo', todoRouter);
+routers.use('/file', fileRouter);
 
 module.exports = routers;
