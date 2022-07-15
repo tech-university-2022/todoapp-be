@@ -4,7 +4,7 @@ const User = require('../models/user.model');
 const { hashPwdFingerprint } = require('../utils/security');
 const sendError = require('../utils/sendError');
 
-module.exports = async (req, res, next) => {
+const authorize = async (req, res, next) => {
   const authHeader = req.headers.authorization || (req.query || {}).token || '';
   if (authHeader.startsWith('Bearer ')) {
     const token = authHeader.substring(7, authHeader.length);
@@ -15,13 +15,13 @@ module.exports = async (req, res, next) => {
       const { userId, pwdFingerprint } = payload;
       let userFound = await User.findByPk(userId);
       if (!userFound) {
-        sendError(res, httpStatus.UNAUTHORIZED, 'User not found');
+        return sendError(res, httpStatus.UNAUTHORIZED, 'User not found');
       }
 
       // check if password was changed or not
       userFound = userFound.get({ plain: true });
       if (hashPwdFingerprint(userFound.password) !== pwdFingerprint) {
-        sendError(res, httpStatus.UNAUTHORIZED, 'Password was changed');
+        return sendError(res, httpStatus.UNAUTHORIZED, 'Password was changed');
       }
 
       // assign and next
@@ -37,3 +37,5 @@ module.exports = async (req, res, next) => {
     sendError(res, httpStatus.UNAUTHORIZED, 'Invalid token');
   }
 };
+
+module.exports = authorize;
