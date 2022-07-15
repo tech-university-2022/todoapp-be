@@ -1,13 +1,16 @@
-const logger = require('../configs/logger');
 const Todo = require('../models/todo.model');
 
 /**
- *
+ * *
+ * @param {userId: number}
  * @param {{take: number; page: number}} pagination
  */
-const getManyTodos = async (pagination) => {
+const getManyTodos = async (userId, pagination) => {
   const { take, page } = pagination;
   const todoFound = await Todo.findAll({
+    where: {
+      createdBy: userId,
+    },
     order: [['updatedAt', 'DESC']],
     offset: (page - 1) * take,
     limit: take,
@@ -17,10 +20,9 @@ const getManyTodos = async (pagination) => {
 
 /**
  *
- * @param {{todoId}} Todo ID
+ * @param {todoId: number}
  */
-const getTodo = async (todoInfo) => {
-  const { todoId } = todoInfo;
+const getTodo = async (todoId) => {
   const todoFound = await Todo.findByPk(todoId);
   return todoFound;
 };
