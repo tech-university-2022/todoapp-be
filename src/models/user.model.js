@@ -11,4 +11,12 @@ User.beforeSave((user) => {
   user.password = hashedPassword;
 });
 
+User.beforeBulkUpdate((data) => {
+  if (data.attributes.password) {
+    const hashedPassword = hashPassword(data.attributes.password);
+    // eslint-disable-next-line no-param-reassign
+    data.attributes.password = hashedPassword;
+  }
+});
+
 module.exports = User;

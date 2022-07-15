@@ -7,10 +7,10 @@ const signUp = catchAsync(async (req, res) => {
   const { user, error } = await authService.signUp(userInfo);
 
   if (error) {
-    return res.status(error.status).send(error);
+    return res.status(error.status).json(error);
   }
 
-  res.status(httpStatus.OK).send({ user });
+  res.status(httpStatus.OK).json({ user });
 });
 
 const logIn = catchAsync(async (req, res) => {
@@ -18,10 +18,10 @@ const logIn = catchAsync(async (req, res) => {
   const { token, user, error } = await authService.logIn(credential);
 
   if (error) {
-    return res.status(error.status).send(error);
+    return res.status(error.status).json(error);
   }
 
-  res.status(httpStatus.OK).send({ token, user });
+  res.status(httpStatus.OK).json({ token, user });
 });
 
 module.exports = {
