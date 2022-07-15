@@ -3,6 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const { todoService } = require('../services');
 
 const getManyTodos = catchAsync(async (req, res) => {
+  const { user } = req.authorized;
   logger.info(`Get many todos: ${JSON.stringify(req.body)}`);
   const todos = await todoService.getManyTodos(req.body);
   logger.info(`Get many todos: ${JSON.stringify(req.body)}\n => Result: ${JSON.stringify(todos)}`);
