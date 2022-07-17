@@ -1,7 +1,7 @@
 const Todo = require('../models/todo.model');
 
 /**
- * *
+ *
  * @param {userId: number}
  * @param {{take: number; page: number}} pagination
  */
@@ -29,11 +29,10 @@ const getTodo = async (todoId) => {
 
 /**
  *
- * @param {{title, content, createdBy, category, status, dueDate}} todo information
+ * @param {todoContent} todo content
  */
-const addTodo = async (todoInfo) => {
-  const { title, content, createdBy, category, status, dueDate } = todoInfo;
-  const todoFound = await Todo.create({ title, content, createdBy, category, status, dueDate });
+const addTodo = async (todoContent) => {
+  const todoFound = await Todo.create(todoContent);
   return todoFound;
 };
 
@@ -53,18 +52,15 @@ const deleteTodo = async (todoInfo) => {
 
 /**
  *
- * @param {{title, content, createdBy, category, status, dueDate}} todo information
+ * @param {todoID}
+ * @param {todoContent}
  */
-const editTodo = async (todoInfo) => {
-  const { todoId, title, content, category, status, dueDate } = todoInfo;
-  const todoFound = await Todo.update(
-    { title, content, category, status, dueDate },
-    {
-      where: {
-        id: todoId,
-      },
-    }
-  );
+const editTodo = async (todoId, todoContent) => {
+  const todoFound = await Todo.update(todoContent, {
+    where: {
+      id: todoId,
+    },
+  });
   return todoFound[0];
 };
 

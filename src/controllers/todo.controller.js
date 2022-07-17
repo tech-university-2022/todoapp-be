@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const validator = require('validator');
 const sendError = require('../utils/sendError');
 const sendResponse = require('../utils/sendResponse');
 const logger = require('../configs/logger');
@@ -14,9 +15,9 @@ const getManyTodos = catchAsync(async (req, res) => {
   logger.info(`Get many todos:\n\tResult: ${JSON.stringify(todos)}`);
 
   if (todos.length === 0) {
-    return sendResponse({ todos }, 'Empty todos');
+    return sendResponse(res, { todos }, 'Empty todos');
   }
-  return sendResponse({ todos });
+  return sendResponse(res, { todos });
 });
 
 const getTodo = catchAsync(async (req, res) => {
@@ -24,6 +25,10 @@ const getTodo = catchAsync(async (req, res) => {
   const { todoId } = req.params;
 
   logger.info(`Get todo:\n\tUser: ${user.email}\n\tTodoId: ${todoId}`);
+
+  if (!validator.isUUID(todoId))
+    return sendError(res, httpStatus.BAD_REQUEST, 'The requested todo is not exists on database');
+
   const todo = await todoService.getTodo(todoId);
   logger.info(`Get todo:\n\tResult: ${JSON.stringify(todo)}`);
 
@@ -33,14 +38,23 @@ const getTodo = catchAsync(async (req, res) => {
   if (todo.createdBy !== user.id) {
     return sendError(res, httpStatus.BAD_REQUEST, 'The user do not have permission to reveal this todo');
   }
-  return sendResponse({ todo });
+  return sendResponse(res, { todo });
 });
 
 const addTodo = catchAsync(async (req, res) => {
-  logger.info(`Add todo: ${JSON.stringify(req.body)}`);
-  const addedTodo = await todoService.addTodo(req.body);
-  logger.info(`Add todos: ${JSON.stringify(req.body)}\n => Result: ${JSON.stringify(addedTodo)}`);
-  res.send(addedTodo);
+  const { user } = req.authorized;
+  const todoContent = {
+    ...req.body,
+    createdBy: user.id,
+  };
+
+  logger.info(`Add todo:\n\tUser: ${user.email}\n\tContent: ${JSON.stringify(todoContent)}`);
+
+  const addedTodo = await todoService.addTodo(todoContent);
+
+  logger.info(`Add todos:\n\tResult: ${JSON.stringify(addedTodo)}`);
+
+  return sendResponse(res, { addedTodo }, 'Add todo successfully');
 });
 
 const deleteTodo = catchAsync(async (req, res) => {
@@ -48,6 +62,9 @@ const deleteTodo = catchAsync(async (req, res) => {
   const { todoId } = req.params;
 
   logger.info(`Delete todo:\n\tUser: ${user.email}\n\tTodoId: ${todoId}`);
+
+  if (!validator.isUUID(todoId))
+    return sendError(res, httpStatus.BAD_REQUEST, 'The requested todo is not exists on database');
 
   const willDeleteTodo = await todoService.getTodo(todoId);
   if (willDeleteTodo === null) {
@@ -63,14 +80,34 @@ const deleteTodo = catchAsync(async (req, res) => {
   if (deletedTodo.some((v) => v === 0)) {
     return sendResponse({}, 'Can not delete todo!');
   }
-  res.send('OK');
+  return sendResponse(res, {}, 'Delete todo successfully!');
 });
 
 const editTodo = catchAsync(async (req, res) => {
-  logger.info(`Add todo: ${JSON.stringify({ ...req.params, ...req.body })}`);
-  const editedTodo = await todoService.editTodo({ ...req.params, ...req.body });
-  logger.info(`Add todos: ${JSON.stringify(req.body)}\n => Result: ${JSON.stringify(editedTodo)}`);
-  res.send(editedTodo ? 'true' : 'false');
+  const { user } = req.authorized;
+  const { todoId } = req.params;
+  const todoContent = req.body;
+
+  logger.info(`Edit todo:\n\tUser: ${user.email}\n\tContent: ${JSON.stringify(todoContent)}`);
+
+  if (!validator.isUUID(todoId))
+    return sendError(res, httpStatus.BAD_REQUEST, 'The requested todo is not exists on database');
+
+  const willEditTodo = await todoService.getTodo(todoId);
+  if (willEditTodo === null) {
+    return sendError(res, httpStatus.BAD_REQUEST, 'The requested todo is not exists on database');
+  }
+  if (willEditTodo.createdBy !== user.id) {
+    return sendError(res, httpStatus.BAD_REQUEST, 'The user do not have permission to reveal this todo');
+  }
+
+  const editedTodo = await todoService.editTodo(todoId, todoContent);
+
+  logger.info(`Edit todos:\n\tResult: ${JSON.stringify(editedTodo)}`);
+
+  if (!editedTodo) return sendResponse(res, {}, 'Edit failed!');
+
+  return sendResponse(res, {}, 'Edit successfully!');
 });
 
 module.exports = {
