@@ -1,5 +1,4 @@
 const httpStatus = require('http-status');
-const validator = require('validator');
 const sendError = require('../utils/sendError');
 const sendResponse = require('../utils/sendResponse');
 const logger = require('../configs/logger');
@@ -25,9 +24,6 @@ const getTodo = catchAsync(async (req, res) => {
   const { todoId } = req.params;
 
   logger.info(`Get todo:\n\tUser: ${user.email}\n\tTodoId: ${todoId}`);
-
-  if (!validator.isUUID(todoId))
-    return sendError(res, httpStatus.BAD_REQUEST, 'The requested todo is not exists on database');
 
   const todo = await todoService.getTodo(todoId);
   logger.info(`Get todo:\n\tResult: ${JSON.stringify(todo)}`);
@@ -63,9 +59,6 @@ const deleteTodo = catchAsync(async (req, res) => {
 
   logger.info(`Delete todo:\n\tUser: ${user.email}\n\tTodoId: ${todoId}`);
 
-  if (!validator.isUUID(todoId))
-    return sendError(res, httpStatus.BAD_REQUEST, 'The requested todo is not exists on database');
-
   const willDeleteTodo = await todoService.getTodo(todoId);
   if (willDeleteTodo === null) {
     return sendError(res, httpStatus.BAD_REQUEST, 'The requested todo is not exists on database');
@@ -89,9 +82,6 @@ const editTodo = catchAsync(async (req, res) => {
   const todoContent = req.body;
 
   logger.info(`Edit todo:\n\tUser: ${user.email}\n\tContent: ${JSON.stringify(todoContent)}`);
-
-  if (!validator.isUUID(todoId))
-    return sendError(res, httpStatus.BAD_REQUEST, 'The requested todo is not exists on database');
 
   const willEditTodo = await todoService.getTodo(todoId);
   if (willEditTodo === null) {

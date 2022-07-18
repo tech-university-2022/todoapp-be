@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { isUUID } = require('../constants/schema');
 
 const getManyTodos = {
   body: Joi.object({
@@ -9,7 +10,7 @@ const getManyTodos = {
 
 const getTodo = {
   params: Joi.object({
-    todoId: Joi.string().required(),
+    todoId: Joi.string().custom(isUUID, 'Check todo ID format').required(),
   }).required(),
 };
 
@@ -25,7 +26,7 @@ const addTodo = {
 
 const deleteTodo = {
   params: Joi.object({
-    todoId: Joi.string().required(),
+    todoId: Joi.string().custom(isUUID, 'Check todo ID format').required(),
   }).required(),
 };
 
