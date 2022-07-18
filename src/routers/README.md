@@ -24,14 +24,14 @@
 - GET /
     - PAYLOAD: token, pagination (take, page)
     - RETURN: array of respective todos, pagination (take, page, haveNextPage, totalTodos).
+- POST /
+    - PAYLOAD: token, content of todo
+    - RETURN: respective todo
 - GET /{todoId}
     - PAYLOAD: token
     - RETURN: respective todo
 - PATCH /{todoID}
     - PAYLOAD: token, new content of todo
-    - RETURN: respective todo
-- POST /
-    - PAYLOAD: token, content of todo
     - RETURN: respective todo
 - DELETE /{todoId}
     - PAYLOAD: token

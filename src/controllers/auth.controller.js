@@ -1,14 +1,27 @@
-const logger = require('../configs/logger');
+const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
+const { authService } = require('../services');
 
 const signUp = catchAsync(async (req, res) => {
-  logger.silly(req.body, req.params, req.query);
-  res.send('hello');
+  const userInfo = req.body;
+  const { user, error } = await authService.signUp(userInfo);
+
+  if (error) {
+    return res.status(error.status).json(error);
+  }
+
+  res.status(httpStatus.OK).json({ user });
 });
 
 const logIn = catchAsync(async (req, res) => {
-  logger.silly(req.body, req.params, req.query);
-  res.send('hello');
+  const credential = req.body;
+  const { token, user, error } = await authService.logIn(credential);
+
+  if (error) {
+    return res.status(error.status).json(error);
+  }
+
+  res.status(httpStatus.OK).json({ token, user });
 });
 
 module.exports = {
