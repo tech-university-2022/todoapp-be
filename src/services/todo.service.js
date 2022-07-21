@@ -7,7 +7,7 @@ const Todo = require('../models/todo.model');
  */
 const getManyTodos = async (userId, pagination) => {
   const { take, page } = pagination;
-  const todoFound = await Todo.findAll({
+  const { rows, count } = await Todo.findAndCountAll({
     where: {
       createdBy: userId,
     },
@@ -15,7 +15,16 @@ const getManyTodos = async (userId, pagination) => {
     offset: (page - 1) * take,
     limit: take,
   });
-  return todoFound;
+  const haveNextPage = page * take < count;
+  return {
+    todos: rows,
+    pagination: {
+      take,
+      page,
+      haveNextPage,
+      total: count,
+    },
+  };
 };
 
 /**

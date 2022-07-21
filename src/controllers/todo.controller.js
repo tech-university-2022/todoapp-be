@@ -10,13 +10,13 @@ const getManyTodos = catchAsync(async (req, res) => {
   const pagination = req.body;
 
   logger.info(`Get many todos:\n\tUser: ${user.email}\n\tPagination: ${JSON.stringify(pagination)}`);
-  const todos = await todoService.getManyTodos(user.id, pagination);
-  logger.info(`Get many todos:\n\tResult: ${JSON.stringify(todos)}`);
+  const data = await todoService.getManyTodos(user.id, pagination);
+  logger.info(`Get many todos:\n\tResult: ${JSON.stringify(data)}`);
 
-  if (todos.length === 0) {
-    return sendResponse(res, { todos }, 'Empty todos');
+  if (data.todos.length === 0) {
+    return sendResponse(res, { data }, 'Empty todos');
   }
-  return sendResponse(res, { todos });
+  return sendResponse(res, { data });
 });
 
 const getTodo = catchAsync(async (req, res) => {
