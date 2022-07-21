@@ -18,7 +18,7 @@ const addTodo = {
   body: Joi.object({
     title: Joi.string().required(),
     content: Joi.string().required(),
-    category: Joi.string().required(),
+    categories: Joi.string().required(),
     status: Joi.string().required(),
     dueDate: Joi.date().required(),
   }).required(),
@@ -34,7 +34,7 @@ const editTodo = {
   body: Joi.object({
     title: Joi.string().required(),
     content: Joi.string().required(),
-    category: Joi.string().required(),
+    categories: Joi.string().required(),
     status: Joi.string().required(),
     dueDate: Joi.date().required(),
   }).required(),
