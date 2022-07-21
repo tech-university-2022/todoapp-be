@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const Todo = require('../models/todo.model');
 
 /**
@@ -5,13 +6,25 @@ const Todo = require('../models/todo.model');
  * @param {userId: number}
  * @param {{take: number; page: number}} pagination
  */
-const getManyTodos = async (userId, pagination) => {
+const getManyTodos = async (userId, pagination, search) => {
   const { take, page } = pagination;
   const { rows, count } = await Todo.findAndCountAll({
     where: {
       createdBy: userId,
+      ...(search
+        ? {
+            [Op.or]: [
+              {
+                title: { [Op.iLike]: `%${search}%` },
+              },
+              {
+                content: { [Op.iLike]: `%${search}%` },
+              },
+            ],
+          }
+        : {}),
     },
-    order: [['updatedAt', 'DESC']],
+    order: [['dueDate', 'DESC']],
     offset: (page - 1) * take,
     limit: take,
   });

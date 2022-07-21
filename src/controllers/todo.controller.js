@@ -7,10 +7,21 @@ const { todoService } = require('../services');
 
 const getManyTodos = catchAsync(async (req, res) => {
   const { user } = req.authorized;
-  const pagination = req.query;
+  /**
+   * @type {{search: string; take: number; page: number}}
+   */
+  const { search, ...pagination } = req.query;
 
   logger.info(`Get many todos:\n\tUser: ${user.email}\n\tPagination: ${JSON.stringify(pagination)}`);
-  const data = await todoService.getManyTodos(user.id, pagination);
+  const data = await todoService.getManyTodos(
+    user.id,
+    pagination,
+    (search || '')
+      .split(' ')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0)
+      .join(' ')
+  );
   logger.info(`Get many todos: Done`);
 
   if (data.todos.length === 0) {

@@ -5,6 +5,7 @@ const getManyTodos = {
   query: Joi.object({
     take: Joi.number().allow(null).optional().default(Number.MAX_SAFE_INTEGER),
     page: Joi.number().allow(null).optional().default(1),
+    search: Joi.string().allow('').allow(null).optional(),
   }).required(),
 };
 
@@ -18,7 +19,7 @@ const addTodo = {
   body: Joi.object({
     title: Joi.string().required(),
     content: Joi.string().required(),
-    categories: Joi.string().required(),
+    categories: Joi.string().allow('').required(),
     status: Joi.string().required(),
     dueDate: Joi.date().required(),
   }).required(),
@@ -34,11 +35,11 @@ const editTodo = {
   body: Joi.object({
     title: Joi.string(),
     content: Joi.string(),
-    category: Joi.string().allow(''),
+    categories: Joi.string().allow(''),
     status: Joi.string(),
     dueDate: Joi.date(),
   })
-    .or('title', 'content', 'category', 'status', 'dueDate')
+    .or('title', 'content', 'categories', 'status', 'dueDate')
     .required(),
 };
 
