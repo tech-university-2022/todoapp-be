@@ -34,7 +34,7 @@ const editTodo = {
   body: Joi.object({
     title: Joi.string(),
     content: Joi.string(),
-    category: Joi.string(),
+    category: Joi.string().allow(''),
     status: Joi.string(),
     dueDate: Joi.date(),
   })
