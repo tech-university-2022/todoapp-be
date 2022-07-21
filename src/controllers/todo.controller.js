@@ -11,7 +11,7 @@ const getManyTodos = catchAsync(async (req, res) => {
 
   logger.info(`Get many todos:\n\tUser: ${user.email}\n\tPagination: ${JSON.stringify(pagination)}`);
   const data = await todoService.getManyTodos(user.id, pagination);
-  logger.info(`Get many todos:\n\tResult: ${JSON.stringify(data)}`);
+  logger.info(`Get many todos: Done`);
 
   if (data.todos.length === 0) {
     return sendResponse(res, { data }, 'Empty todos');
@@ -26,7 +26,7 @@ const getTodo = catchAsync(async (req, res) => {
   logger.info(`Get todo:\n\tUser: ${user.email}\n\tTodoId: ${todoId}`);
 
   const todo = await todoService.getTodo(todoId);
-  logger.info(`Get todo:\n\tResult: ${JSON.stringify(todo)}`);
+  logger.info(`Get todo: Done`);
 
   if (todo === null) {
     return sendError(res, httpStatus.BAD_REQUEST, 'The requested todo is not exists on database');
@@ -48,7 +48,7 @@ const addTodo = catchAsync(async (req, res) => {
 
   const addedTodo = await todoService.addTodo(todoContent);
 
-  logger.info(`Add todos:\n\tResult: ${JSON.stringify(addedTodo)}`);
+  logger.info(`Add todos: Done`);
 
   return sendResponse(res, { addedTodo }, 'Add todo successfully');
 });
@@ -68,7 +68,7 @@ const deleteTodo = catchAsync(async (req, res) => {
   }
 
   const deletedTodo = await todoService.deleteTodo(req.params);
-  logger.info(`Delete todo:\n\tResult: ${JSON.stringify(deletedTodo)}`);
+  logger.info(`Delete todo: Done`);
 
   if (deletedTodo.some((v) => v === 0)) {
     return sendResponse({}, 'Can not delete todo!');
@@ -93,7 +93,7 @@ const editTodo = catchAsync(async (req, res) => {
 
   const editedTodo = await todoService.editTodo(todoId, todoContent);
 
-  logger.info(`Edit todos:\n\tResult: ${JSON.stringify(editedTodo)}`);
+  logger.info(`Edit todos: Done`);
 
   if (!editedTodo) return sendResponse(res, {}, 'Edit failed!');
 
