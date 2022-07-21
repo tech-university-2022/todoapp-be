@@ -95,7 +95,9 @@ const editTodo = catchAsync(async (req, res) => {
 
   if (!editedTodo) return sendResponse(res, {}, 'Edit failed!');
 
-  return sendResponse(res, {}, 'Edit successfully!');
+  const todo = await todoService.getTodo(todoId);
+
+  return sendResponse(res, { todo }, 'Edit successfully!');
 });
 
 module.exports = {

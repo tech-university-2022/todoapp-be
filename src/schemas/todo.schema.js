@@ -32,12 +32,14 @@ const deleteTodo = {
 
 const editTodo = {
   body: Joi.object({
-    title: Joi.string().required(),
-    content: Joi.string().required(),
-    categories: Joi.string().required(),
-    status: Joi.string().required(),
-    dueDate: Joi.date().required(),
-  }).required(),
+    title: Joi.string(),
+    content: Joi.string(),
+    category: Joi.string(),
+    status: Joi.string(),
+    dueDate: Joi.date(),
+  })
+    .or('title', 'content', 'category', 'status', 'dueDate')
+    .required(),
 };
 
 module.exports = {
