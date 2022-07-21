@@ -7,7 +7,7 @@ const { todoService } = require('../services');
 
 const getManyTodos = catchAsync(async (req, res) => {
   const { user } = req.authorized;
-  const pagination = req.body;
+  const pagination = req.query;
 
   logger.info(`Get many todos:\n\tUser: ${user.email}\n\tPagination: ${JSON.stringify(pagination)}`);
   const data = await todoService.getManyTodos(user.id, pagination);
