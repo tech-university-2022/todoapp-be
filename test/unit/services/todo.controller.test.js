@@ -202,3 +202,52 @@ describe('Test API: get todo', () => {
     });
   });
 });
+
+describe('Test API: add todo', () => {
+  beforeEach(() => {
+    logger.info.mockReturnValue('Logged');
+  });
+
+  const res = {
+    send: jest.fn((data, message) => ({ message, ...data })),
+    json: jest.fn((status, message) => ({ status, message })),
+    status: jest.fn((statusCode) => ({
+      json: jest.fn(({ status, message }) => ({ status, message })),
+    })),
+  };
+
+  test('TC1 - Add successfully', () => {
+    const req = {
+      authorized: AUTHs[0],
+      body: {
+        title: 'Add from postman 6',
+        content: 'I am sleepy',
+        category: 'Heheh',
+        status: 'Wait',
+        dueDate: '2022-07-24 15:47:08.02059+00',
+      },
+    };
+
+    const queryResult = {
+      message: 'Add todo successfully',
+      addedTodo: {
+        id: 'A test id',
+        ...req.body,
+        createdBy: 'user id',
+        updatedAt: 'time 1',
+        createdAt: 'time 2',
+      },
+    };
+
+    const correctedResult = {
+      message: 'Add todo successfully',
+      addedTodo: queryResult,
+    };
+
+    todoService.addTodo.mockResolvedValue(queryResult);
+
+    return TodoController.addTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+});
