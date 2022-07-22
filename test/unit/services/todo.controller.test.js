@@ -251,3 +251,205 @@ describe('Test API: add todo', () => {
     });
   });
 });
+describe('Test API: delete todo', () => {
+  beforeEach(() => {
+    logger.info.mockReturnValue('Logged');
+  });
+
+  const res = {
+    send: jest.fn((data, message) => ({ message, ...data })),
+    json: jest.fn((status, message) => ({ status, message })),
+    status: jest.fn((statusCode) => ({
+      json: jest.fn(({ status, message }) => ({ status, message })),
+    })),
+  };
+
+  test('TC1 - todoId is not exist', () => {
+    const req = {
+      authorized: AUTHs[0],
+      params: {
+        todoId: 'Test',
+      },
+    };
+
+    const queryResult = null;
+
+    const correctedResult = {
+      status: httpStatus.BAD_REQUEST,
+      message: 'The requested todo is not exists on database',
+    };
+
+    todoService.getTodo.mockResolvedValue(queryResult);
+
+    return TodoController.deleteTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+
+  test('TC2 - user do not have permission', () => {
+    const req = {
+      authorized: AUTHs[1],
+      params: {
+        todoId: 'todo1',
+      },
+    };
+
+    const queryResult = TODOs[0];
+
+    const correctedResult = {
+      status: httpStatus.BAD_REQUEST,
+      message: 'The user do not have permission to reveal this todo',
+    };
+
+    todoService.getTodo.mockResolvedValue(queryResult);
+
+    return TodoController.deleteTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+
+  test('TC3 - delete todo fail', () => {
+    const req = {
+      authorized: AUTHs[0],
+      params: {
+        todoId: 'todo1',
+      },
+    };
+
+    const queryResult = 0;
+
+    const correctedResult = {
+      message: 'Can not delete todo!',
+    };
+
+    todoService.getTodo.mockResolvedValue(TODOs[0]);
+    todoService.deleteTodo.mockResolvedValue(queryResult);
+
+    return TodoController.deleteTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+
+  test('TC4 - delete todo successfully', () => {
+    const req = {
+      authorized: AUTHs[0],
+      params: {
+        todoId: 'todo1',
+      },
+    };
+
+    const queryResult = 1;
+
+    const correctedResult = {
+      message: 'Delete todo successfully!',
+    };
+
+    todoService.deleteTodo.mockResolvedValue(queryResult);
+
+    return TodoController.deleteTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+});
+
+describe('Test API: edit todo', () => {
+  beforeEach(() => {
+    logger.info.mockReturnValue('Logged');
+  });
+
+  const res = {
+    send: jest.fn((data, message) => ({ message, ...data })),
+    json: jest.fn((status, message) => ({ status, message })),
+    status: jest.fn((statusCode) => ({
+      json: jest.fn(({ status, message }) => ({ status, message })),
+    })),
+  };
+
+  test('TC1 - todoId is not exist', () => {
+    const req = {
+      authorized: AUTHs[0],
+      params: {
+        todoId: 'Test',
+      },
+    };
+
+    const queryResult = null;
+
+    const correctedResult = {
+      status: httpStatus.BAD_REQUEST,
+      message: 'The requested todo is not exists on database',
+    };
+
+    todoService.getTodo.mockResolvedValue(queryResult);
+
+    return TodoController.editTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+
+  test('TC2 - user do not have permission', () => {
+    const req = {
+      authorized: AUTHs[1],
+      params: {
+        todoId: 'todo1',
+      },
+    };
+
+    const queryResult = TODOs[0];
+
+    const correctedResult = {
+      status: httpStatus.BAD_REQUEST,
+      message: 'The user do not have permission to reveal this todo',
+    };
+
+    todoService.getTodo.mockResolvedValue(queryResult);
+
+    return TodoController.editTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+
+  test('TC3 - edit todo fail', () => {
+    const req = {
+      authorized: AUTHs[0],
+      params: {
+        todoId: 'todo1',
+      },
+    };
+
+    const queryResult = 0;
+
+    const correctedResult = {
+      message: 'Edit failed!',
+    };
+
+    todoService.getTodo.mockResolvedValue(TODOs[0]);
+    todoService.editTodo.mockResolvedValue(queryResult);
+
+    return TodoController.editTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+
+  test('TC4 - edit todo successfully', () => {
+    const req = {
+      authorized: AUTHs[0],
+      params: {
+        todoId: 'todo1',
+      },
+    };
+
+    const queryResult = 1;
+
+    const correctedResult = {
+      message: 'Edit successfully!',
+      todo: TODOs[0],
+    };
+    todoService.getTodo.mockResolvedValue(TODOs[0]);
+    todoService.editTodo.mockResolvedValue(queryResult);
+
+    return TodoController.editTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+});
