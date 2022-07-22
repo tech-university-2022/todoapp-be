@@ -21,7 +21,7 @@ const AUTHs = [
 
 const TODOs = [
   {
-    id: 'Todo 1',
+    id: 'todo1',
     title: 'Title 1',
     content: 'Content 1',
     createdBy: 'user1',
@@ -32,7 +32,7 @@ const TODOs = [
     categories: 'Work',
   },
   {
-    id: 'Todo 2',
+    id: 'todo2',
     title: 'Title 2',
     content: 'Content 2',
     createdBy: 'user1',
@@ -43,7 +43,7 @@ const TODOs = [
     categories: 'Play',
   },
   {
-    id: 'Todo 3',
+    id: 'todo3',
     title: 'Title 3',
     content: 'Content 3',
     createdBy: 'user2',

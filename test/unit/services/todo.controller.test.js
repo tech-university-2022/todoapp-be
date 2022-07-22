@@ -16,9 +16,6 @@ describe('Test API: get many todos', () => {
   const res = {
     send: jest.fn((data, message) => ({ message, ...data })),
     json: jest.fn((status, message) => ({ status, message })),
-    // status: jest.fn((statusCode) => ({
-    //   json: jest.fn((status, message) => ({ status, message })),
-    // })),
   };
 
   test('TC1 - 0 rows', () => {
@@ -121,6 +118,86 @@ describe('Test API: get many todos', () => {
     todoService.getManyTodos.mockResolvedValue(queryResult);
 
     return TodoController.getManyTodos(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+});
+
+describe('Test API: get todo', () => {
+  beforeEach(() => {
+    logger.info.mockReturnValue('Logged');
+  });
+
+  const res = {
+    send: jest.fn((data, message) => ({ message, ...data })),
+    json: jest.fn((status, message) => ({ status, message })),
+    status: jest.fn((statusCode) => ({
+      json: jest.fn(({ status, message }) => ({ status, message })),
+    })),
+  };
+
+  test('TC1 - todoId is not exist', () => {
+    const req = {
+      authorized: AUTHs[0],
+      params: {
+        todoId: 'Test',
+      },
+    };
+
+    const queryResult = null;
+
+    const correctedResult = {
+      status: httpStatus.BAD_REQUEST,
+      message: 'The requested todo is not exists on database',
+    };
+
+    todoService.getTodo.mockResolvedValue(queryResult);
+
+    return TodoController.getTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+
+  test('TC2 - user do not have permission', () => {
+    const req = {
+      authorized: AUTHs[1],
+      params: {
+        todoId: 'todo1',
+      },
+    };
+
+    const queryResult = TODOs[0];
+
+    const correctedResult = {
+      status: httpStatus.BAD_REQUEST,
+      message: 'The user do not have permission to reveal this todo',
+    };
+
+    todoService.getTodo.mockResolvedValue(queryResult);
+
+    return TodoController.getTodo(req, res).then((result) => {
+      return expect(result).toEqual(correctedResult);
+    });
+  });
+
+  test('TC3 - got todo successfully', () => {
+    const req = {
+      authorized: AUTHs[0],
+      params: {
+        todoId: 'todo1',
+      },
+    };
+
+    const queryResult = TODOs[0];
+
+    const correctedResult = {
+      message: 'OK',
+      todo: queryResult,
+    };
+
+    todoService.getTodo.mockResolvedValue(queryResult);
+
+    return TodoController.getTodo(req, res).then((result) => {
       return expect(result).toEqual(correctedResult);
     });
   });
