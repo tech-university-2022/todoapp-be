@@ -81,7 +81,7 @@ const deleteTodo = catchAsync(async (req, res) => {
   const deletedTodo = await todoService.deleteTodo(req.params);
   logger.info(`Delete todo: Done`);
 
-  if (!deletedTodo) return sendResponse({}, 'Can not delete todo!');
+  if (!deletedTodo) return sendResponse(res, {}, 'Can not delete todo!');
   return sendResponse(res, {}, 'Delete todo successfully!');
 });
 
