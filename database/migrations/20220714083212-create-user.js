@@ -5,7 +5,7 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.fn('gen_random_uuid'),
+        defaultValue: Sequelize.fn('uuid_generate_v4'),
       },
       firstName: {
         type: Sequelize.STRING,

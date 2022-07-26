@@ -1,9 +1,8 @@
 const { Sequelize } = require('sequelize');
+const configs = require('../../database/config/config');
 
-const sequelize = new Sequelize(
-  `postgres://${process.env.DB_USERNAME}:${encodeURIComponent(process.env.DB_PASSWORD)}@${process.env.DB_HOST}:${
-    process.env.DB_PORT
-  }/${process.env.DB_NAME}`
-);
+const config = configs[process.env.NODE_ENV || 'development'];
+const { url, ...options } = config;
+const sequelize = new Sequelize(url, options);
 
 module.exports = sequelize;
