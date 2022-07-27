@@ -1,11 +1,15 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Install uuid
+    await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // create file entity
     await queryInterface.createTable('Files', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.fn('gen_random_uuid'),
+        defaultValue: Sequelize.fn('uuid_generate_v4'),
       },
       name: {
         type: Sequelize.STRING,
