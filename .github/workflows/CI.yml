@@ -105,7 +105,9 @@ jobs:
           EOT
 
           cat .env
-      - uses: ./.github/actions/build
+      - name: Build image with docker
+        run: |
+          docker build --build-arg ENV=$ENV --build-arg PORT=$PORT -t "todoapp" --no-cache .
       - uses: Azure/container-scan@v0
         with:
           image-name: todoapp:latest
