@@ -1,0 +1,40 @@
+name: Build Docker Image
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    name: Build
+    needs: secret-scan
+    runs-on: ubuntu-latest
+    env:
+      PORT: 3001
+      ENV: "production"
+      TOKEN_EXPIRES_IN: "30m"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Setup env
+        run: |
+          cat <<EOT >> .env
+            DB_HOST={{ secrets.PROD_DB_HOST }}
+            DB_USERNAME={{ secrets.PROD_DB_USERNAME }}
+            DB_NAME={{ secrets.PROD_DB_NAME }}
+            DB_PASSWORD={{ secrets.PROD_DB_PASSWORD }}
+            DB_PORT={{ secrets.PROD_DB_PORT }}
+            PORT=$PORT
+            HASH_KEY_PASSWORD={{ secrets.HASH_KEY_PASSWORD }}
+            TOKEN_SECRET_KEY={{ secrets.TOKEN_SECRET_KEY }}
+            TOKEN_EXPIRES_IN=$TOKEN_EXPIRES_IN
+          EOT
+
+          cat .env
+      - name: Build image with docker
+        run: |
+          docker build --build-arg ENV=$ENV --build-arg PORT=$PORT -t "todoapp" --no-cache .
+      - name: Docker tag
+        run: |
+          docker tag todoapp:latest todothucle.azurecr.io/todoapp
