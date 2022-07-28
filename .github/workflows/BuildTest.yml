@@ -35,7 +35,6 @@ jobs:
     name: Static code analysis
     needs: test
     runs-on: ubuntu-latest
-    depends-on: Unit testing
     env:
       PORT: 3001
       ENV: "test"
