@@ -1,6 +1,6 @@
 name: Build & testing
 on:
-  pull_request:
+  push:
     branches:
     - github_action_testing
 
