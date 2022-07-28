@@ -80,6 +80,7 @@ jobs:
     needs: secret-scan
     runs-on: ubuntu-latest
     env:
+      DOCKLE_HOST: "unix:///var/run/docker.sock"
       PORT: 3001
       ENV: 'production'
       TOKEN_EXPIRES_IN: '30m'
