@@ -5,17 +5,59 @@ on:
     - github_action_testing
 
 jobs:
+  test:
+    name: Unit testing
+    runs-on: ubuntu-latest
+    env:
+      PORT: 3001
+      ENV: "test"
+      DB_HOST: "localhost"
+      DB_USERNAME: "todo"
+      DB_NAME: "todo"
+      DB_PASSWORD: "testing123password"
+      DB_PORT: 5432
+      HASH_KEY_PASSWORD: "testing_hash_key_password"
+      TOKEN_SECRET_KEY: "testing_token_secret_key"
+      TOKEN_EXPIRES_IN: "30m"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Setup packages
+        run: |
+          yarn
+      - name: Run test cases
+        run: |
+          yarn test
+
   build:
     name: Build
     runs-on: ubuntu-latest
     env:
       PORT: 3001
       ENV: "production"
+      TOKEN_EXPIRES_IN: "30m"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+      - name: Setup env
+        run: |
+          cat <<EOT >> .env
+            DB_HOST={{ secrets.PROD_DB_HOST }}
+            DB_USERNAME={{ secrets.PROD_DB_USERNAME }}
+            DB_NAME={{ secrets.PROD_DB_NAME }}
+            DB_PASSWORD={{ secrets.PROD_DB_PASSWORD }}
+            DB_PORT={{ secrets.PROD_DB_PORT }}
+            PORT=$PORT
+            HASH_KEY_PASSWORD={{ secrets.HASH_KEY_PASSWORD }}
+            TOKEN_SECRET_KEY={{ secrets.TOKEN_SECRET_KEY }}
+            TOKEN_EXPIRES_IN=$TOKEN_EXPIRES_IN
+          EOT
+
+          cat .env
       - name: Build image with docker
         run: |
           docker build --build-arg ENV=$ENV --build-arg PORT=$PORT -t "todoapp" --no-cache .
