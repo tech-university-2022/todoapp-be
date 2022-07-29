@@ -1,2 +1,2 @@
-ignores: ["eslint", "babel-*"]
+ignores: ["depcheck", "pg", "pg-hstore", "lint-staged", "supertest"]
 skip-missing: true
