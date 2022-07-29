@@ -1,2 +1,18 @@
-ignores: ["depcheck", "pg", "pg-hstore", "lint-staged", "supertest"]
+ignores:
+  [
+    'depcheck',
+    'pg',
+    'pg-hstore',
+    'lint-staged',
+    'supertest',
+    'cross-env',
+    'coveralls',
+    'eslint',
+    'eslint-*',
+    'husky',
+    'jest',
+    'nodemon',
+    'prettier',
+    'sequelize-cli',
+  ]
 skip-missing: true
