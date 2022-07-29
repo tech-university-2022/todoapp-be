@@ -60,10 +60,22 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+
+  dependency-check:
+    name: Dependency check
+    needs: static-code-analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check dependencies
+        run: |
+          npx depcheck
   
   secret-scan:
     name: Secret scan
-    needs: static-code-analysis
+    needs: dependency-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
