@@ -7,6 +7,8 @@ on:
 jobs:
   CI:
     uses: ./.github/workflows/CI.yml
+    secrets: inherit
   CD:
     needs: CI
     uses: ./.github/workflows/CD.yml
+    secrets: inherit
