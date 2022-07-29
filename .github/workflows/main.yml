@@ -1,0 +1,11 @@
+name: main
+on:
+  push:
+    branches:
+    - github_action_testing
+
+jobs:
+  CI:
+    uses: ./.github/workflows/CI.yml
+  CD:
+    uses: ./.github/workflows/CD.yml
