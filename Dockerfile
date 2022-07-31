@@ -15,8 +15,6 @@ RUN yarn install --pure-lockfile
 
 COPY --chown=node:node . .
 
-RUN rm .env
-
 ENV NODE_ENV=$ENV
 ENV PORT=$PORT
 
