@@ -1,6 +1,8 @@
 name: CD
 on:
-  workflow_call:
+  push:
+    branches:
+    - develop
 
 jobs:
   deploy:
