@@ -45,6 +45,7 @@ const getManyTodos = async (userId, pagination, search) => {
  * @param {todoId: number}
  */
 const getTodo = async (todoId) => {
+  // TODO: add userid to filter
   const todoFound = await Todo.findByPk(todoId);
   return todoFound;
 };

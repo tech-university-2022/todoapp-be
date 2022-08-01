@@ -1,0 +1,126 @@
+name: CI
+on:
+  pull_request:
+    branches:
+    - develop
+
+jobs:
+  test:
+    name: Unit testing
+    runs-on: ubuntu-latest
+    env:
+      PORT: 3001
+      ENV: "test"
+      DB_HOST: "localhost"
+      DB_USERNAME: "todo"
+      DB_NAME: "todo"
+      DB_PASSWORD: "testing123password"
+      DB_PORT: 5432
+      HASH_KEY_PASSWORD: "testing_hash_key_password"
+      TOKEN_SECRET_KEY: "testing_token_secret_key"
+      TOKEN_EXPIRES_IN: "30m"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Setup packages
+        run: |
+          yarn
+      - name: Run test cases
+        run: |
+          yarn test
+
+  static-code-analysis:
+    name: Static code analysis
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      PORT: 3001
+      ENV: "test"
+      DB_HOST: "localhost"
+      DB_USERNAME: "todo"
+      DB_NAME: "todo"
+      DB_PASSWORD: "testing123password"
+      DB_PORT: 5432
+      HASH_KEY_PASSWORD: "testing_hash_key_password"
+      TOKEN_SECRET_KEY: "testing_token_secret_key"
+      TOKEN_EXPIRES_IN: "30m"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Setup packages
+        run: |
+          yarn
+      - name: Run test coverage
+        run: |
+          yarn coverage
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+
+  dependency-check:
+    name: Dependency check
+    needs: static-code-analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check dependencies
+        run: |
+          npx depcheck
+  
+  secret-scan:
+    name: Secret scan
+    needs: dependency-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  container-scan:
+    name: Container scan
+    needs: secret-scan
+    runs-on: ubuntu-latest
+    env:
+      DOCKLE_HOST: "unix:///var/run/docker.sock"
+      PORT: 3001
+      ENV: 'production'
+      TOKEN_EXPIRES_IN: '30m'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Setup env
+        run: |
+          cat <<EOT >> .env
+            DB_HOST={{ secrets.PROD_DB_HOST }}
+            DB_USERNAME={{ secrets.PROD_DB_USERNAME }}
+            DB_NAME={{ secrets.PROD_DB_NAME }}
+            DB_PASSWORD={{ secrets.PROD_DB_PASSWORD }}
+            DB_PORT={{ secrets.PROD_DB_PORT }}
+            PORT=$PORT
+            HASH_KEY_PASSWORD={{ secrets.HASH_KEY_PASSWORD }}
+            TOKEN_SECRET_KEY={{ secrets.TOKEN_SECRET_KEY }}
+            TOKEN_EXPIRES_IN=$TOKEN_EXPIRES_IN
+          EOT
+
+          cat .env
+      - name: Build image with docker
+        run: |
+          docker build --build-arg ENV=$ENV --build-arg PORT=$PORT -t "todoapp" --no-cache .
+      - uses: Azure/container-scan@v0
+        with:
+          image-name: todoapp:latest

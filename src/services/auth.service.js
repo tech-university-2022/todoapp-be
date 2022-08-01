@@ -11,6 +11,7 @@ const { hashPassword, hashPwdFingerprint } = require('../utils/security');
 const logIn = async (credential) => {
   let userFound = await User.findOne({ where: { email: credential.email } });
   if (userFound) {
+    // TODO: try to avoid let
     userFound = userFound.get({ plain: true });
     if (userFound.password === hashPassword(credential.password)) {
       // provide token here
