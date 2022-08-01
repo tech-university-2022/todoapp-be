@@ -1,0 +1,39 @@
+name: CD
+on:
+  push:
+    branches:
+    - develop
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      PORT: 3001
+      ENV: 'production'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Setup env
+        run: |
+          cat <<EOT >> .env
+            PORT=$PORT
+          EOT
+
+          cat .env
+      - name: Build image with docker
+        run: |
+          docker build --build-arg ENV=$ENV --build-arg PORT=$PORT -t "todoapp" --no-cache .
+      - name: Tag docker image
+        run: |
+          docker tag todoapp todoacrthucle.azurecr.io/todoapp
+      - name: Docker login container registry server
+        run: |
+          docker login --username ${{ secrets.REGISTRY_USERNAME }} --password ${{ secrets.REGISTRY_PASSWORD }} todoacrthucle.azurecr.io
+      - name: Docker push
+        run: |
+          docker push todoacrthucle.azurecr.io/todoapp

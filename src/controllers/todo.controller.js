@@ -13,6 +13,7 @@ const getManyTodos = catchAsync(async (req, res) => {
   const { search, ...pagination } = req.query;
 
   logger.info(`Get many todos:\n\tUser: ${user.email}\n\tPagination: ${JSON.stringify(pagination)}`);
+  // TODO: bring search input here
   const data = await todoService.getManyTodos(
     user.id,
     pagination,
@@ -55,6 +56,7 @@ const addTodo = catchAsync(async (req, res) => {
     createdBy: user.id,
   };
 
+  // TODO: avoid logging private data
   logger.info(`Add todo:\n\tUser: ${user.email}\n\tContent: ${JSON.stringify(todoContent)}`);
 
   const addedTodo = await todoService.addTodo(todoContent);

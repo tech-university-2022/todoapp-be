@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:16-alpine
 
 ARG ENV
 ARG PORT
@@ -14,8 +14,6 @@ USER node
 RUN yarn install --pure-lockfile
 
 COPY --chown=node:node . .
-
-RUN rm .env
 
 ENV NODE_ENV=$ENV
 ENV PORT=$PORT

@@ -95,3 +95,7 @@ describe('Testing signup API', () => {
     );
   });
 });
+
+afterAll(() => {
+  // TODO: remove mocking
+});
