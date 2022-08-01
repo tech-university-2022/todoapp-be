@@ -9,7 +9,6 @@ jobs:
     env:
       PORT: 3001
       ENV: 'production'
-      TOKEN_EXPIRES_IN: '30m'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -20,15 +19,7 @@ jobs:
       - name: Setup env
         run: |
           cat <<EOT >> .env
-            DB_HOST={{ secrets.PROD_DB_HOST }}
-            DB_USERNAME={{ secrets.PROD_DB_USERNAME }}
-            DB_NAME={{ secrets.PROD_DB_NAME }}
-            DB_PASSWORD={{ secrets.PROD_DB_PASSWORD }}
-            DB_PORT={{ secrets.PROD_DB_PORT }}
             PORT=$PORT
-            HASH_KEY_PASSWORD={{ secrets.HASH_KEY_PASSWORD }}
-            TOKEN_SECRET_KEY={{ secrets.TOKEN_SECRET_KEY }}
-            TOKEN_EXPIRES_IN=$TOKEN_EXPIRES_IN
           EOT
 
           cat .env
@@ -37,10 +28,10 @@ jobs:
           docker build --build-arg ENV=$ENV --build-arg PORT=$PORT -t "todoapp" --no-cache .
       - name: Tag docker image
         run: |
-          docker tag todoapp todothucle.azurecr.io/todoapp
+          docker tag todoapp todoacrthucle.azurecr.io/todoapp
       - name: Docker login container registry server
         run: |
-          docker login --username ${{ secrets.REGISTRY_USERNAME }} --password ${{ secrets.REGISTRY_PASSWORD }} todothucle.azurecr.io
+          docker login --username ${{ secrets.REGISTRY_USERNAME }} --password ${{ secrets.REGISTRY_PASSWORD }} todoacrthucle.azurecr.io
       - name: Docker push
         run: |
-          docker push todothucle.azurecr.io/todoapp
+          docker push todoacrthucle.azurecr.io/todoapp
