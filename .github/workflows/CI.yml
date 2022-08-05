@@ -87,9 +87,70 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  license-check:
+    name: License check
+    runs-on: ubuntu-latest
+    needs: secret-scan
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Install dependencies
+        run: yarn
+      - run: bundle install
+      - uses: jonabc/setup-licensed@v1
+        with:
+         version: 2.x
+      - uses: jonabc/licensed-ci@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - run: licensed status
+      - run: licensed
+
+  security-scan:
+    name: Security scan
+    runs-on: ubuntu-latest
+    needs: license-check
+    env:
+      PORT: 3001
+      NODE_ENV: "development"
+      DB_HOST: "localhost"
+      DB_USERNAME: "todo"
+      DB_NAME: "todo"
+      DB_PASSWORD: "tester@123"
+      DB_PORT: 5432
+      HASH_KEY_PASSWORD: "HASH_KEY_PASSWORD"
+      TOKEN_SECRET_KEY: "TOKEN_SECRET_KEY"
+      TOKEN_EXPIRES_IN: "240m"
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      # install your projects dependencies
+      - name: Install dependencies
+        run: yarn
+
+      - name: Start website
+        run: |
+          yarn run start:development &
+          sleep 10
+
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.7.0
+        with:
+          target: 'http://localhost:3001'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: --autooff
+
   container-scan:
     name: Container scan
-    needs: secret-scan
+    needs: security-scan
     runs-on: ubuntu-latest
     env:
       DOCKLE_HOST: "unix:///var/run/docker.sock"
